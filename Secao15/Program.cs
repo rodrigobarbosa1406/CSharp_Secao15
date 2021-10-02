@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Secao15
 {
@@ -56,7 +57,51 @@ namespace Secao15
 
         static void Exercicio02()
         {
-            Console.WriteLine("Hello World!");
+            Dictionary<string, int> votos = new Dictionary<string, int>();
+
+            Console.Write("Enter file full path: ");
+            string path = Console.ReadLine();
+
+            try
+            {
+                using (FileStream fs = new FileStream(path, FileMode.Open))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            string[] line = sr.ReadLine().Split(',');
+
+                            if (votos.ContainsKey(line[0]))
+                            {
+                                int qtde = votos[line[0]];
+                                qtde += int.Parse(line[1]);
+
+                                votos[line[0]] = qtde;
+                            }
+                            else
+                            {
+                                votos[line[0]] = int.Parse(line[1]);
+                            }
+                        }
+                    }
+                }
+
+                Console.WriteLine();
+
+                foreach (KeyValuePair<string, int> item in votos)
+                {
+                    Console.WriteLine(item.Key + ": " + item.Value);
+                }
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("An error ocurred: " + e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unexpected error: " + e.Message);
+            }
         }
     }
 }
